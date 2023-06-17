@@ -23,7 +23,7 @@ go get github.com/StreamlineX/SecureX
 ## Implementation
 
 ```go
-import "github.com/StreamlineX/SecureX"
+import SecureX "github.com/StreamlineX/SecureX"
 
 func main() {
 	go SecureX.AntiDebugRun()

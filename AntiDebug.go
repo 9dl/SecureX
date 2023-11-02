@@ -1,4 +1,4 @@
-package github.com/StreamlineX/SecureX
+package github.com/9dl/SecureX
 
 import (
 	"log"
@@ -6,31 +6,46 @@ import (
 	"os/exec"
 	"strings"
 	"syscall"
-	"unsafe"
 )
 
+var blacklisted = []string{
+	"processh", "debug", "debugger", "hacker", "inject", "dump",
+	"dumper", "deobfs", "deobfuscator", "dnspy", "de4dot", "dbg",
+	"string", "decrypt", "decryptor", "detect it easy", "die",
+	"unpack", "unpacker", "http",
+}
 
-func AntiDebugRun() {
+func main() {
 	for {
-		processes, err := exec.Command("tasklist").Output()
+		if isDebuggerAttached() {
+			log.Println("Debugger detected. Terminating...")
+			os.Exit(0)
+		}
+
+		processList, err := getProcessList()
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		processList := string(processes)
+		killBlacklistedProcesses(processList)
+	}
+}
 
-		for _, blacklistedProcess := range Blacklisted {
-			if strings.Contains(processList, blacklistedProcess) {
-				err := killProcess(blacklistedProcess)
-				if err != nil {
-					log.Fatal(err)
-				}
+func getProcessList() (string, error) {
+	processes, err := exec.Command("tasklist").Output()
+	if err != nil {
+		return "", err
+	}
+	return string(processes), nil
+}
+
+func killBlacklistedProcesses(processList string) {
+	for _, blacklistedProcess := range blacklisted {
+		if strings.Contains(processList, blacklistedProcess) {
+			err := killProcess(blacklistedProcess)
+			if err != nil {
+				log.Fatal(err)
 			}
-		}
-
-		if isDebuggerAttached() {
-			log.Println("Debugger detected. Terminating...")
-			os.Exit(0)
 		}
 	}
 }
@@ -54,35 +69,6 @@ func isDebuggerAttached() bool {
 		return false
 	}
 
-	isDebugging := false
-
 	ret, _, _ := syscall.Syscall(uintptr(isDebuggerPresent), 0, 0, 0, 0)
-	if ret != 0 {
-		isDebugging = true
-	}
-
-	return isDebugging
-}
-
-var Blacklisted = []string{
-	"processh",
-	"debug",
-	"debugger",
-	"hacker",
-	"inject",
-	"dump",
-	"dumper",
-	"deobfs",
-	"deobfuscator",
-	"dnspy",
-	"de4dot",
-	"dbg",
-	"string",
-	"decrypt",
-	"decryptor",
-	"detect it easy",
-	"die",
-	"unpack",
-	"unpacker",
-	"http",
+	return ret != 0
 }

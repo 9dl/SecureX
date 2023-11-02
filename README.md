@@ -17,13 +17,13 @@ Please read the [LICENSE](LICENSE) file for the full text of the GNU General Pub
 To install SecureX, you can use the following command:
 
 ```shell
-go get github.com/StreamlineX/SecureX
+go get github.com/9dl/SecureX
 ```
 
 ## Implementation
 
 ```go
-import SecureX "github.com/StreamlineX/SecureX"
+import SecureX "github.com/9dl/SecureX"
 
 func main() {
 	go SecureX.AntiDebugRun()

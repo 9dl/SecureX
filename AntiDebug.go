@@ -15,7 +15,7 @@ var blacklisted = []string{
 	"unpack", "unpacker", "http",
 }
 
-func main() {
+func AntiDebugRun() {
 	for {
 		if isDebuggerAttached() {
 			log.Println("Debugger detected. Terminating...")
